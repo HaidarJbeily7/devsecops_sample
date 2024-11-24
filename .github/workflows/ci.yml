@@ -87,13 +87,20 @@ jobs:
        
    - name: Run ZAP Scan
      run: |
-       ./ZAP_2.14.0/zap.sh -cmd -quickurl http://localhost:8000 -quickprogress -quickout zap-report.html
+       ./ZAP_2.14.0/zap.sh -cmd -quickurl http://localhost:8000 -quickprogress -quickout ./zap-report.html
+       # Ensure the report exists
+       ls -la zap-report.html || echo "Report not generated"
 
    - name: Generate Summary
+     if: always()  # Run even if ZAP scan fails
      run: |
-       echo "DAST Scan Summary" > dast-summary.txt
-       echo "==================" >> dast-summary.txt
-       grep -A 5 "Alerts Summary" zap-report.html >> dast-summary.txt
+       if [ -f zap-report.html ]; then
+         echo "DAST Scan Summary" > dast-summary.txt
+         echo "==================" >> dast-summary.txt
+         grep -A 5 "Alerts Summary" zap-report.html >> dast-summary.txt
+       else
+         echo "ZAP scan report not found" > dast-summary.txt
+       fi
 
    - name: Upload DAST Reports
      uses: actions/upload-artifact@v3
