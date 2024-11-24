@@ -87,17 +87,17 @@ jobs:
        
    - name: Run ZAP Scan
      run: |
-       ./ZAP_2.14.0/zap.sh -cmd -quickurl http://localhost:8000 -quickprogress -quickout ./zap-report.html
+       ./ZAP_2.14.0/zap.sh -cmd -quickurl http://localhost:8000 -quickprogress -quickout /home/runner/work/devsecops_sample/devsecops_sample/ZAP_2.14.0/zap-report.html
        # Ensure the report exists
-       ls -la zap-report.html || echo "Report not generated"
+       ls -la /home/runner/work/devsecops_sample/devsecops_sample/ZAP_2.14.0/zap-report.html || echo "Report not generated"
 
    - name: Generate Summary
      if: always()  # Run even if ZAP scan fails
      run: |
-       if [ -f zap-report.html ]; then
+       if [ -f /home/runner/work/devsecops_sample/devsecops_sample/ZAP_2.14.0/zap-report.html ]; then
          echo "DAST Scan Summary" > dast-summary.txt
          echo "==================" >> dast-summary.txt
-         grep -A 5 "Alerts Summary" zap-report.html >> dast-summary.txt
+         grep -A 5 "Alerts Summary" /home/runner/work/devsecops_sample/devsecops_sample/ZAP_2.14.0/zap-report.html >> dast-summary.txt
        else
          echo "ZAP scan report not found" > dast-summary.txt
        fi
@@ -108,5 +108,5 @@ jobs:
      with:
        name: dast-findings
        path: |
-         zap-report.html
+         /home/runner/work/devsecops_sample/devsecops_sample/ZAP_2.14.0/zap-report.html
          dast-summary.txt
